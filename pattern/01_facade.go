@@ -25,7 +25,6 @@ package pattern
 - Отправка оповещений
 */
 
-// TODO проверить работоспособность всех шаблонов
 import (
 	"fmt"
 	"time"
@@ -111,6 +110,8 @@ func (f *imageDowloaderFacade) download(userId string, data []byte) error {
 		f.logger.write(logRecord)
 	}
 
+	f.logger.write("downloading image")
+
 	return nil
 }
 
@@ -118,6 +119,7 @@ func (f *imageDowloaderFacade) download(userId string, data []byte) error {
 type dbClient struct{}
 
 func (c *dbClient) add(userId string, downloadTimestamp time.Time, data []byte) error {
+	fmt.Printf("Adding image by user id = %s to db\n", userId)
 	return nil
 }
 
@@ -125,6 +127,7 @@ func (c *dbClient) add(userId string, downloadTimestamp time.Time, data []byte) 
 type cacheClient struct{}
 
 func (c *cacheClient) add(userId string, data []byte) (string, error) {
+	fmt.Printf("Adding image by user id = %s to cache\n", userId)
 	return "", nil
 }
 
@@ -132,6 +135,7 @@ func (c *cacheClient) add(userId string, data []byte) (string, error) {
 type improver struct{}
 
 func (i *improver) handle(data []byte) ([]byte, error) {
+	fmt.Println("Handling image in improver service")
 	return []byte{}, nil
 }
 
@@ -139,6 +143,7 @@ func (i *improver) handle(data []byte) ([]byte, error) {
 type checker struct{}
 
 func (c *checker) check(userId string, data []byte) error {
+	fmt.Println("Checking image in checker service")
 	return nil
 }
 
@@ -146,6 +151,7 @@ func (c *checker) check(userId string, data []byte) error {
 type notifier struct{}
 
 func (n *notifier) sendNotificationsToSubscribers(userId string, imgId string) error {
+	fmt.Println("Sending notifications about image in notifier service")
 	return nil
 }
 
@@ -153,6 +159,7 @@ func (n *notifier) sendNotificationsToSubscribers(userId string, imgId string) e
 type logger struct{}
 
 func (l *logger) write(record string) error {
+	fmt.Printf("Writing log record: %s\n", record)
 	return nil
 }
 

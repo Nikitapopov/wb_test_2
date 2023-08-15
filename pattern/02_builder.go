@@ -201,6 +201,7 @@ func main() {
 	err := director.generateReport()
 	if err != nil {
 		// log err
+		return
 	}
 	_ = director.getReportName()
 }

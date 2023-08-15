@@ -1,5 +1,7 @@
 package pattern
 
+import "fmt"
+
 /*
 	Реализовать паттерн «посетитель».
 Объяснить применимость паттерна, его плюсы и минусы, а также реальные примеры использования данного примера на практике.
@@ -82,6 +84,7 @@ type manager struct{}
 
 // Метод посетителя для фронтендера
 func (m *manager) visitForFrontender(f *frontender) {
+	fmt.Println("Посетитель обрабатывает элемент с типом frontender")
 	if f.fixedButtonsNumber+(f.fixedFormsNumber*3) < 50 {
 		f.is_fired = true
 	}
@@ -89,6 +92,7 @@ func (m *manager) visitForFrontender(f *frontender) {
 
 // Метод посетителя для бэкендера
 func (m *manager) visitForBackender(b *backender) {
+	fmt.Println("Посетитель обрабатывает элемент с типом backender")
 	if b.developedApiMethodsNumber > 20 {
 		b.is_fired = true
 	}
@@ -96,6 +100,7 @@ func (m *manager) visitForBackender(b *backender) {
 
 // Метод посетителя для девопсера
 func (m *manager) visitForDevopser(d *devopser) {
+	fmt.Println("Посетитель обрабатывает элемент с типом devopser")
 	if d.startedMicroservicesInstancesNumber > 1 {
 		d.is_fired = true
 	}

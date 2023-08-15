@@ -1,10 +1,5 @@
 package pattern
 
-import (
-	"fmt"
-	"math/rand"
-)
-
 /*
 	Реализовать паттерн «состояние».
 Объяснить применимость паттерна, его плюсы и минусы, а также реальные примеры использования данного примера на практике.
@@ -30,6 +25,11 @@ import (
 - Операции с заказом на разных этапах доставки.
 */
 
+import (
+	"fmt"
+	"math/rand"
+)
+
 // Тип енама состояния автомата
 type stateType int16
 
@@ -53,13 +53,11 @@ type state interface {
 
 // Интерфейс автомата
 type iGumballMachine interface {
-	insertQuarter()
-	ejectQuarter()
-	turnCrank()
-	dispense()
-	refill(int)
+	InsertQuarter()
+	EjectQuarter()
+	TurnCrank()
+	Refill(int)
 	setState(stateType)
-	// TODO мб убрать
 	releaseGum()
 	getCount() int
 }
@@ -76,7 +74,7 @@ type gumballMachine struct {
 }
 
 // Конструктор автомата
-func newGumnallMachine(count int) iGumballMachine {
+func NewGumnallMachine(count int) iGumballMachine {
 	// Инициализация автомата
 	machine := &gumballMachine{}
 
@@ -121,28 +119,23 @@ func newGumnallMachine(count int) iGumballMachine {
 }
 
 // Метод автомата для вставки монеты
-func (m *gumballMachine) insertQuarter() {
+func (m *gumballMachine) InsertQuarter() {
 	m.state.insertQuarter()
 }
 
 // Метод автомата для возврата монеты
-func (m *gumballMachine) ejectQuarter() {
+func (m *gumballMachine) EjectQuarter() {
 	m.state.ejectQuarter()
 }
 
 // Метод автомата для проворота рукоятки
-func (m *gumballMachine) turnCrank() {
+func (m *gumballMachine) TurnCrank() {
 	m.state.turnCrank()
 	m.state.dispense()
 }
 
-// TODO Метод автомата для получения жевачки ; В чем отличие от releaseGum
-func (m *gumballMachine) dispense() {
-	m.state.dispense()
-}
-
 // Метод автомата для пополнения автомата жевачками
-func (m *gumballMachine) refill(count int) {
+func (m *gumballMachine) Refill(count int) {
 	m.count += count
 	m.state.refill()
 }
@@ -157,13 +150,13 @@ func (m *gumballMachine) setState(stateType stateType) {
 	case hasQuarterStateType:
 		m.state = m.hasQuarterState
 	case soldStateType:
-		m.state = m.soldOutState
+		m.state = m.soldState
 	case winnerStateType:
 		m.state = m.winnerState
 	}
 }
 
-// TODO Метод автомата для освобождения жевачки; В чем отличие от releaseGum
+// Метод автомата декрементирования счетчика жевачек (выдача жевачки автоматом)
 func (m *gumballMachine) releaseGum() {
 	if m.count > 0 {
 		fmt.Println("A gumball comes rolling out the slot...")
@@ -326,12 +319,12 @@ func (s *winnerState) refill() {}
 
 func main() {
 	// Изначальное количество жевачек
-	count := 1
+	count := 2
 
 	// Создание автомата
-	gumballMachine := newGumnallMachine(count)
+	gumballMachine := NewGumnallMachine(count)
 
-	gumballMachine.insertQuarter()
-	gumballMachine.turnCrank()
-	gumballMachine.releaseGum()
+	// Операции вставки монеты и поворота рычага для получения жевачки
+	gumballMachine.InsertQuarter()
+	gumballMachine.TurnCrank()
 }

@@ -1,7 +1,5 @@
 package pattern
 
-import "fmt"
-
 /*
 	Реализовать паттерн «цепочка вызовов».
 Объяснить применимость паттерна, его плюсы и минусы, а также реальные примеры использования данного примера на практике.
@@ -27,6 +25,8 @@ import "fmt"
 - Перевод статуса пользователя в нужное состояние
 */
 
+import "fmt"
+
 // Структура запроса
 type request struct {
 	method      string
@@ -48,6 +48,9 @@ type endpointExistenceCheck struct {
 
 func (c *endpointExistenceCheck) execute(request request) {
 	fmt.Printf("Cheching endpoint existence: %s %s\n", request.method, request.url)
+	if c.next != nil {
+		c.next.execute(request)
+	}
 }
 
 func (c *endpointExistenceCheck) setNext(next requestCheck) {
@@ -61,6 +64,9 @@ type authenticationCheck struct {
 
 func (c *authenticationCheck) execute(request request) {
 	fmt.Printf("Cheching authentication token: %s\n", request.accessToken)
+	if c.next != nil {
+		c.next.execute(request)
+	}
 }
 
 func (c *authenticationCheck) setNext(next requestCheck) {
@@ -74,6 +80,9 @@ type paramsValidationCheck struct {
 
 func (c *paramsValidationCheck) execute(request request) {
 	fmt.Printf("Params validation: %s\n", request.params)
+	if c.next != nil {
+		c.next.execute(request)
+	}
 }
 
 func (c *paramsValidationCheck) setNext(next requestCheck) {
