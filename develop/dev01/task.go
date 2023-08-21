@@ -20,13 +20,12 @@ import (
 )
 
 const (
-	ntpServerAddress = "0.beevik-ntp.pool.ntp.org"
-	RFC3339Nano      = "2006-01-02T15:04:05.999999999Z07:00"
+	ntpServerAddress  = "0.beevik-ntp.pool.ntp.org"
+	formatRFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
 )
 
 func main() {
 	ntpClient := newNtpClient()
-	// printNow(ntpClient)
 	time, err := getNow(ntpClient)
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
@@ -35,16 +34,6 @@ func main() {
 	os.Stdout.WriteString(time)
 }
 
-// // Функция для отображения текущего времени в формате RFC3339Nano c помощью клиента ntpClient в stdout
-// func printNow(ntpClient iNtpClient) {
-// 	time, err := getNow(ntpClient)
-// 	if err != nil {
-// 		os.Stderr.WriteString(err.Error())
-// 		os.Exit(1)
-// 	}
-// 	os.Stdout.WriteString(time)
-// }
-
 // Функция для получения текущего времени в формате RFC3339Nano с помощью клиента ntpClient
 func getNow(ntpClient iNtpClient) (string, error) {
 	time, err := ntpClient.Time()
@@ -52,7 +41,7 @@ func getNow(ntpClient iNtpClient) (string, error) {
 		return "", err
 	}
 
-	return time.Format(RFC3339Nano), nil
+	return time.Format(formatRFC3339Nano), nil
 }
 
 // ntp клиент
