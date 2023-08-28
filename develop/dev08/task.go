@@ -23,7 +23,6 @@ import (
 Программа должна проходить все тесты. Код должен проходить проверки go vet и golint.
 */
 
-// TODO поддержать fork/exec команды
 // TODO конвеер на пайпах
 // TODO тесты
 func main() {
@@ -50,11 +49,17 @@ func startShell() {
 // Функция для обработки команды в виде строки input
 func execInput(input string) error {
 	// Удаление лишних символов
-	input = strings.TrimSuffix(input, "\r")
-	input = strings.TrimPrefix(input, "\n")
+	input = strings.TrimSuffix(input, "\r\n")
+	input = strings.TrimPrefix(input, "\r\n")
 
-	// Разделение строки через пробелы
+	// Разделение строки по аргументам
 	args := strings.Split(input, " ")
+
+	isFork := false
+	if args[len(args)-1] == "&" {
+		args = args[:len(args)-1]
+		isFork = true
+	}
 
 	// Обработка команды cd и выхода из утилиты отдельно от других команд
 	switch args[0] {
@@ -74,6 +79,10 @@ func execInput(input string) error {
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 
-	// ВЫполнение команды
+	// Выполнение команды
+	if isFork {
+		return cmd.Start()
+	}
+
 	return cmd.Run()
 }
