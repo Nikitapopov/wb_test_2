@@ -8,20 +8,24 @@ import (
 	"time"
 )
 
+// Сервис событий
 type eventService struct {
 	repo repository.IEventRepository
 }
 
+// Конструктор сервиса событий
 func NewEventService(repo repository.IEventRepository) IEventService {
 	return &eventService{
 		repo: repo,
 	}
 }
 
+// Сохранение событий в хранилище
 func (s *eventService) SaveEvents() error {
 	return s.repo.SaveEvents()
 }
 
+// Добавление события
 func (s *eventService) Insert(dto InsertEventDTO) int {
 	event := model.Event{
 		UserId:      dto.UserId,
@@ -32,6 +36,7 @@ func (s *eventService) Insert(dto InsertEventDTO) int {
 	return s.repo.Insert(event)
 }
 
+// Обновление события
 func (s *eventService) Update(id int, dto UpdateEventDTO) error {
 	event := model.Event{
 		UserId:      dto.UserId,
@@ -46,6 +51,7 @@ func (s *eventService) Update(id int, dto UpdateEventDTO) error {
 	return err
 }
 
+// Удаление события
 func (s *eventService) Remove(id int) error {
 	err := s.repo.Remove(id)
 	if err != nil {
@@ -54,6 +60,7 @@ func (s *eventService) Remove(id int) error {
 	return err
 }
 
+// Получение событий за дату date
 func (s *eventService) GetForDay(date string) ([]model.Event, error) {
 	dateAsTime, err := time.Parse(model.DateLayout, date)
 	if err != nil {
@@ -68,6 +75,7 @@ func (s *eventService) GetForDay(date string) ([]model.Event, error) {
 	return events, err
 }
 
+// Получение событий за неделю, в которой имеется дата date
 func (s *eventService) GetForWeek(date string) ([]model.Event, error) {
 	dateAsTime, err := time.Parse(model.DateLayout, date)
 	if err != nil {
@@ -82,6 +90,7 @@ func (s *eventService) GetForWeek(date string) ([]model.Event, error) {
 	return events, err
 }
 
+// Получение событий за месяц, в котором имеется дата date
 func (s *eventService) GetForMonth(date string) ([]model.Event, error) {
 	dateAsTime, err := time.Parse(model.DateLayout, date)
 	if err != nil {

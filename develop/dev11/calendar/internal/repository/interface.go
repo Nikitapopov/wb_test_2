@@ -6,7 +6,6 @@ import (
 )
 
 type IEventRepository interface {
-	// GetById(id int) (model.Event, error)
 	SaveEvents() error
 	Insert(event model.Event) int
 	Update(id int, event model.Event) error

@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Метод промежуточного слоя для логирования запроса
 func Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()

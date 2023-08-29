@@ -9,28 +9,34 @@ import (
 	"dev11/calendar/internal/model"
 )
 
-type jsonStorage struct {
+// Хранилище событий
+type eventStorage struct {
 	fileName string
 }
 
-func NewJsonStorage(fileName string) IStorage {
-	return &jsonStorage{
+// Конструктор хранилища событий
+func NewEventStorage(fileName string) IStorage {
+	return &eventStorage{
 		fileName: fileName,
 	}
 }
 
-func (s *jsonStorage) Get() ([]model.Event, error) {
+// Получение событий из хранилища
+func (s *eventStorage) Get() ([]model.Event, error) {
+	// Открытие файла с событиями
 	file, err := s.openStorageFile()
 	if err != nil {
 		return nil, fmt.Errorf("getting opening file: %w", err)
 	}
 	defer file.Close()
 
+	// Валидация файла на корректность json-а и возврат пустого слайса, если файл не корректен
 	decoder := json.NewDecoder(file)
 	if _, err := decoder.Token(); err != nil {
 		return []model.Event{}, nil
 	}
 
+	// Итерационная запись событий в events
 	events := []model.Event{}
 	for decoder.More() {
 		var event model.Event
@@ -45,13 +51,16 @@ func (s *jsonStorage) Get() ([]model.Event, error) {
 	return events, nil
 }
 
-func (s *jsonStorage) Save(events []model.Event) error {
+// Сохранение событий в хранилище
+func (s *eventStorage) Save(events []model.Event) error {
+	// Открытие файла с событиями
 	file, err := s.openStorageFile()
 	if err != nil {
 		return fmt.Errorf("getting opening file: %w", err)
 	}
 	defer file.Close()
 
+	// Сериализация событий и запись в файл
 	encoder := json.NewEncoder(file)
 	err = encoder.Encode(events)
 	if err != nil {
@@ -62,7 +71,8 @@ func (s *jsonStorage) Save(events []model.Event) error {
 }
 
 // Функция для открытия файла. Требует закрытия возвращаего значения!
-func (s *jsonStorage) openStorageFile() (*os.File, error) {
+// Если файл не существует, то он создается
+func (s *eventStorage) openStorageFile() (*os.File, error) {
 	dir := filepath.Dir(s.fileName)
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		err = os.MkdirAll(dir, os.ModeDir)
